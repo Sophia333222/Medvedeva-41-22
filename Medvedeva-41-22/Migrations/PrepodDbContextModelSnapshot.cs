@@ -4,18 +4,16 @@ using Medvedeva_41_22.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace Medvedeva_41_22.Migrations
 {
-    [DbContext(typeof(TeacherDbContext))]
-    [Migration("20250525113411_CreateDatabase")]
-    partial class CreateDatabase
+    [DbContext(typeof(PrepodDbContext))]
+    partial class PrepodDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,7 +30,7 @@ namespace Medvedeva_41_22.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -50,10 +48,10 @@ namespace Medvedeva_41_22.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime?>("FoundationDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("FoundationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("HeadId")
+                    b.Property<int>("HeadOfDepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -63,9 +61,8 @@ namespace Medvedeva_41_22.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HeadId")
-                        .IsUnique()
-                        .HasFilter("[HeadId] IS NOT NULL");
+                    b.HasIndex("HeadOfDepartmentId")
+                        .IsUnique();
 
                     b.ToTable("Departments", (string)null);
                 });
@@ -88,7 +85,58 @@ namespace Medvedeva_41_22.Migrations
                     b.ToTable("Disciplines", (string)null);
                 });
 
-            modelBuilder.Entity("Medvedeva_41_22.Models.Load", b =>
+            modelBuilder.Entity("Medvedeva_41_22.Models.Position", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Positions", (string)null);
+                });
+
+            modelBuilder.Entity("Medvedeva_41_22.Models.Teacher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AcademicDegreeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("PositionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AcademicDegreeId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("PositionId");
+
+                    b.ToTable("Teachers", (string)null);
+                });
+
+            modelBuilder.Entity("Medvedeva_41_22.Models.Workload", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -111,83 +159,57 @@ namespace Medvedeva_41_22.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Loads", (string)null);
-                });
-
-            modelBuilder.Entity("Medvedeva_41_22.Models.Position", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Positions", (string)null);
-                });
-
-            modelBuilder.Entity("Medvedeva_41_22.Models.Teacher", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("AcademicDegreeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PositionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AcademicDegreeId");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("PositionId");
-
-                    b.ToTable("Teachers");
+                    b.ToTable("Workloads", (string)null);
                 });
 
             modelBuilder.Entity("Medvedeva_41_22.Models.Department", b =>
                 {
-                    b.HasOne("Medvedeva_41_22.Models.Teacher", "Head")
-                        .WithOne("ManagedDepartment")
-                        .HasForeignKey("Medvedeva_41_22.Models.Department", "HeadId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                    b.HasOne("Medvedeva_41_22.Models.Teacher", "HeadOfDepartment")
+                        .WithOne()
+                        .HasForeignKey("Medvedeva_41_22.Models.Department", "HeadOfDepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.Navigation("Head");
+                    b.Navigation("HeadOfDepartment");
                 });
 
-            modelBuilder.Entity("Medvedeva_41_22.Models.Load", b =>
+            modelBuilder.Entity("Medvedeva_41_22.Models.Teacher", b =>
+                {
+                    b.HasOne("Medvedeva_41_22.Models.AcademicDegree", "AcademicDegree")
+                        .WithMany("Teachers")
+                        .HasForeignKey("AcademicDegreeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Medvedeva_41_22.Models.Department", "Department")
+                        .WithMany("Teachers")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Medvedeva_41_22.Models.Position", "Position")
+                        .WithMany("Teachers")
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AcademicDegree");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Position");
+                });
+
+            modelBuilder.Entity("Medvedeva_41_22.Models.Workload", b =>
                 {
                     b.HasOne("Medvedeva_41_22.Models.Discipline", "Discipline")
-                        .WithMany("Loads")
+                        .WithMany("Workloads")
                         .HasForeignKey("DisciplineId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Medvedeva_41_22.Models.Teacher", "Teacher")
-                        .WithMany("Loads")
+                        .WithMany("Workloads")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -195,28 +217,6 @@ namespace Medvedeva_41_22.Migrations
                     b.Navigation("Discipline");
 
                     b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("Medvedeva_41_22.Models.Teacher", b =>
-                {
-                    b.HasOne("Medvedeva_41_22.Models.AcademicDegree", "AcademicDegree")
-                        .WithMany("Teachers")
-                        .HasForeignKey("AcademicDegreeId");
-
-                    b.HasOne("Medvedeva_41_22.Models.Department", "Department")
-                        .WithMany("Teachers")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Medvedeva_41_22.Models.Position", "Position")
-                        .WithMany("Teachers")
-                        .HasForeignKey("PositionId");
-
-                    b.Navigation("AcademicDegree");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Position");
                 });
 
             modelBuilder.Entity("Medvedeva_41_22.Models.AcademicDegree", b =>
@@ -231,7 +231,7 @@ namespace Medvedeva_41_22.Migrations
 
             modelBuilder.Entity("Medvedeva_41_22.Models.Discipline", b =>
                 {
-                    b.Navigation("Loads");
+                    b.Navigation("Workloads");
                 });
 
             modelBuilder.Entity("Medvedeva_41_22.Models.Position", b =>
@@ -241,9 +241,7 @@ namespace Medvedeva_41_22.Migrations
 
             modelBuilder.Entity("Medvedeva_41_22.Models.Teacher", b =>
                 {
-                    b.Navigation("Loads");
-
-                    b.Navigation("ManagedDepartment");
+                    b.Navigation("Workloads");
                 });
 #pragma warning restore 612, 618
         }

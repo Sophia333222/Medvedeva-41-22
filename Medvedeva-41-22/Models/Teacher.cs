@@ -1,23 +1,25 @@
-﻿namespace Medvedeva_41_22.Models
+﻿using System.Collections.Generic;
+namespace Medvedeva_41_22.Models
 {
     public class Teacher
-{
-    public int Id { get; set; }
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
+    {
+        public int Id { get; set; } // Первичный ключ
 
-    public int? AcademicDegreeId { get; set; }
-    public AcademicDegree? AcademicDegree { get; set; }
+        public string Name { get; set; } = null!; // Имя преподавателя
 
-    public int? PositionId { get; set; }
-    public Position? Position { get; set; }
+        // Связь "многие-к-одному" с кафедрой
+        public int DepartmentId { get; set; }
+        public Department Department { get; set; } = null!;
 
-    public int? DepartmentId { get; set; }
-    public Department? Department { get; set; }
+        // Связь "многие-к-одному" с учёной степенью
+        public int AcademicDegreeId { get; set; }
+        public AcademicDegree AcademicDegree { get; set; } = null!;
 
-    public Department? ManagedDepartment { get; set; } // Кафедра, которой заведует преподаватель
+        // Связь "многие-к-одному" с должностью
+        public int PositionId { get; set; }
+        public Position Position { get; set; } = null!;
 
-    public ICollection<Load> Loads { get; set; } = new List<Load>();
-
-}
+        // Связь "один-ко-многим" с нагрузкой
+        public ICollection<Workload> Workloads { get; set; } = new List<Workload>();
+    }
 }

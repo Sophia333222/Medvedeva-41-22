@@ -15,7 +15,7 @@ namespace Medvedeva_41_22.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,7 +41,7 @@ namespace Medvedeva_41_22.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,8 +55,8 @@ namespace Medvedeva_41_22.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    FoundationDate = table.Column<DateTime>(type: "date", nullable: true),
-                    HeadId = table.Column<int>(type: "int", nullable: true)
+                    FoundationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    HeadOfDepartmentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,11 +69,10 @@ namespace Medvedeva_41_22.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AcademicDegreeId = table.Column<int>(type: "int", nullable: true),
-                    PositionId = table.Column<int>(type: "int", nullable: true),
-                    DepartmentId = table.Column<int>(type: "int", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
+                    AcademicDegreeId = table.Column<int>(type: "int", nullable: false),
+                    PositionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,22 +81,24 @@ namespace Medvedeva_41_22.Migrations
                         name: "FK_Teachers_AcademicDegrees_AcademicDegreeId",
                         column: x => x.AcademicDegreeId,
                         principalTable: "AcademicDegrees",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Teachers_Departments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Teachers_Positions_PositionId",
                         column: x => x.PositionId,
                         principalTable: "Positions",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Loads",
+                name: "Workloads",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -108,15 +109,15 @@ namespace Medvedeva_41_22.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Loads", x => x.Id);
+                    table.PrimaryKey("PK_Workloads", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Loads_Disciplines_DisciplineId",
+                        name: "FK_Workloads_Disciplines_DisciplineId",
                         column: x => x.DisciplineId,
                         principalTable: "Disciplines",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Loads_Teachers_TeacherId",
+                        name: "FK_Workloads_Teachers_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "Teachers",
                         principalColumn: "Id",
@@ -124,21 +125,10 @@ namespace Medvedeva_41_22.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Departments_HeadId",
+                name: "IX_Departments_HeadOfDepartmentId",
                 table: "Departments",
-                column: "HeadId",
-                unique: true,
-                filter: "[HeadId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Loads_DisciplineId",
-                table: "Loads",
-                column: "DisciplineId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Loads_TeacherId",
-                table: "Loads",
-                column: "TeacherId");
+                column: "HeadOfDepartmentId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Teachers_AcademicDegreeId",
@@ -155,22 +145,33 @@ namespace Medvedeva_41_22.Migrations
                 table: "Teachers",
                 column: "PositionId");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_Workloads_DisciplineId",
+                table: "Workloads",
+                column: "DisciplineId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Workloads_TeacherId",
+                table: "Workloads",
+                column: "TeacherId");
+
             migrationBuilder.AddForeignKey(
-                name: "FK_Departments_Teachers_HeadId",
+                name: "FK_Departments_Teachers_HeadOfDepartmentId",
                 table: "Departments",
-                column: "HeadId",
+                column: "HeadOfDepartmentId",
                 principalTable: "Teachers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Departments_Teachers_HeadId",
+                name: "FK_Departments_Teachers_HeadOfDepartmentId",
                 table: "Departments");
 
             migrationBuilder.DropTable(
-                name: "Loads");
+                name: "Workloads");
 
             migrationBuilder.DropTable(
                 name: "Disciplines");

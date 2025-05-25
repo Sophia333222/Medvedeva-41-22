@@ -3,31 +3,25 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
-namespace Medvedeva_41_22.Database.Configurations
+public class DepartmentConfiguration : IEntityTypeConfiguration<Department>
 {
-    public class DepartmentConfiguration : IEntityTypeConfiguration<Department>
+    public void Configure(EntityTypeBuilder<Department> builder)
     {
-        public void Configure(EntityTypeBuilder<Department> builder)
-        {
-            builder.ToTable("Departments");
-            builder.HasKey(d => d.Id);
-            builder.Property(d => d.Name).HasMaxLength(100).IsRequired();
+        builder.ToTable("Departments");
+        builder.HasKey(d => d.Id);
 
-            builder.Property(d => d.FoundationDate)
-                   .HasColumnType("date")
-                   .IsRequired(false);   // дата может быть NULL
+        builder.Property(d => d.Name).IsRequired().HasMaxLength(100);
 
-            builder.HasMany(d => d.Teachers)
-                .WithOne(t => t.Department)
-                .HasForeignKey(t => t.DepartmentId)
-                .OnDelete(DeleteBehavior.Cascade);
+        // Связь "один-к-одному" с заведующим кафедрой
+        builder.HasOne(d => d.HeadOfDepartment)
+               .WithOne()
+               .HasForeignKey<Department>(d => d.HeadOfDepartmentId)
+               .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(d => d.Head)
-            .WithOne(t => t.ManagedDepartment)
-            .HasForeignKey<Department>(d => d.HeadId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        }
-
+        // Связь "один-ко-многим" с преподавателями
+        builder.HasMany(d => d.Teachers)
+               .WithOne(t => t.Department)
+               .HasForeignKey(t => t.DepartmentId)
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }

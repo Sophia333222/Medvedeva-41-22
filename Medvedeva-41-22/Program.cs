@@ -3,7 +3,6 @@ using Medvedeva_41_22.Database;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
-using System.Linq.Expressions;
 var builder = WebApplication.CreateBuilder(args);
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -19,8 +18,10 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    builder.Services.AddDbContext<TeacherDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    builder.Services.AddDbContext<PrepodDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+  
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -30,17 +31,19 @@ try
         app.UseSwaggerUI();
     }
 
+   
+
     app.UseAuthorization();
 
     app.MapControllers();
 
     app.Run();
+
 }
 catch (Exception ex)
 {
-    logger.Error(ex, "Stopped program because of exeption");
+    logger.Error(ex, "Stopped program because of exception");
 }
-
 finally
 {
     LogManager.Shutdown();

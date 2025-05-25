@@ -3,29 +3,37 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Medvedeva_41_22.Models;
 
 
-namespace Medvedeva_41_22.Data.Configurations
+public class TeacherConfiguration : IEntityTypeConfiguration<Teacher>
 {
-    public class TeacherConfiguration : IEntityTypeConfiguration<Teacher>
+    public void Configure(EntityTypeBuilder<Teacher> builder)
     {
-        private const string TableName = "Teachers";
-        public void Configure(EntityTypeBuilder<Teacher> builder)
-        {
-            builder.HasKey(t => t.Id);
+        builder.ToTable("Teachers");
+        builder.HasKey(t => t.Id);
 
-            builder.Property(t => t.FirstName)
-                .IsRequired();
+        builder.Property(t => t.Name).IsRequired().HasMaxLength(100);
 
-            builder.Property(t => t.LastName)
-                .IsRequired();
+        // Связь "многие-к-одному" с кафедрой
+        builder.HasOne(t => t.Department)
+               .WithMany(d => d.Teachers)
+               .HasForeignKey(t => t.DepartmentId)
+               .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(t => t.Loads)
-                .WithOne(l => l.Teacher)
-                .OnDelete(DeleteBehavior.Cascade);
+        // Связь "многие-к-одному" с учёной степенью
+        builder.HasOne(t => t.AcademicDegree)
+               .WithMany(a => a.Teachers)
+               .HasForeignKey(t => t.AcademicDegreeId)
+               .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(t => t.Department)
-                .WithMany(d => d.Teachers)
-                .HasForeignKey(t => t.DepartmentId)
-                .OnDelete(DeleteBehavior.Cascade);
-        }
+        // Связь "многие-к-одному" с должностью
+        builder.HasOne(t => t.Position)
+               .WithMany(p => p.Teachers)
+               .HasForeignKey(t => t.PositionId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+        // Связь "один-ко-многим" с нагрузкой
+        builder.HasMany(t => t.Workloads)
+               .WithOne(w => w.Teacher)
+               .HasForeignKey(w => w.TeacherId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }

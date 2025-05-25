@@ -4,9 +4,13 @@ namespace Medvedeva_41_22.Models
 {
     public class AcademicDegree
     {
-        public int Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public ICollection<Teacher> Teachers { get; set; } = new List<Teacher>();
+        public int Id { get; set; } // Первичный ключ
 
+        public string Name { get; set; } = null!; // Название учёной степени
+
+        // Связь "один-ко-многим" с преподавателями
+        public ICollection<Teacher> Teachers { get; set; } = new List<Teacher>();
     }
+
+
 }
