@@ -1,38 +1,23 @@
-﻿using Medvedeva_41_22.Models;
-
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.RegularExpressions;
-
-public class Teacher
+﻿namespace Medvedeva_41_22.Models
 {
-    [Key]
+    public class Teacher
+{
     public int Id { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
 
-    [Required]
+    public int? AcademicDegreeId { get; set; }
+    public AcademicDegree? AcademicDegree { get; set; }
 
-    public string FirstName { get; set; }
-
-    [Required]
-
-    public string LastName { get; set; }
-
-    public int DegreeId { get; set; }
-
-    [ForeignKey("DegreeId")]
-    public virtual Degree Degree { get; set; }
-
-    public int PositionId { get; set; }
-
-    [ForeignKey("PositionId")]
-    public virtual Position Position { get; set; }
+    public int? PositionId { get; set; }
+    public Position? Position { get; set; }
 
     public int? DepartmentId { get; set; }
+    public Department? Department { get; set; }
 
-    [ForeignKey("DepartmentId")]
-    public virtual Department Department { get; set; }
+    public Department? ManagedDepartment { get; set; } // Кафедра, которой заведует преподаватель
 
-    public virtual ICollection<Load> Loads { get; set; } = new List<Load>();
+    public ICollection<Load> Loads { get; set; } = new List<Load>();
 
-  
+}
 }

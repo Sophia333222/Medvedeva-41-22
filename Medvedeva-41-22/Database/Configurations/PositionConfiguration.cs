@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Medvedeva_41_22.Database.Configurations
 {
+    
     public class PositionConfiguration : IEntityTypeConfiguration<Position>
     {
-        private const string TableName = "Positions";
         public void Configure(EntityTypeBuilder<Position> builder)
         {
+            builder.ToTable("Positions");
             builder.HasKey(p => p.Id);
-
-            builder.Property(p => p.Name)
-                .IsRequired();
+            builder.Property(p => p.Title).HasMaxLength(100).IsRequired();
         }
+
     }
 }
