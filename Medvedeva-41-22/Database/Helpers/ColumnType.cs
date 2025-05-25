@@ -1,4 +1,4 @@
-﻿namespace Medvedeva_41_22.Helpers
+﻿namespace Medvedeva_41_22.Database.Helpers
 {
     public class ColumnType
     {

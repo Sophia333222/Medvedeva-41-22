@@ -4,7 +4,10 @@ namespace Medvedeva_41_22.Models
 {
     public class Position
     {
-        public int PositionId { get; set; }
-        public string PositionName { get; set; }
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
     }
 }
