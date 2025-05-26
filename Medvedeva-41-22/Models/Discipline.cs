@@ -1,5 +1,4 @@
 ﻿
-using System.Collections.Generic;
 namespace Medvedeva_41_22.Models
 {
     public class Discipline
@@ -11,5 +10,4 @@ namespace Medvedeva_41_22.Models
         // Связь "один-ко-многим" с нагрузкой
         public ICollection<Workload> Workloads { get; set; } = new List<Workload>();
     }
-
 }

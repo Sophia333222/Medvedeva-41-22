@@ -1,5 +1,4 @@
 ﻿
-
 namespace Medvedeva_41_22.Models
 {
     public class AcademicDegree
@@ -11,6 +10,4 @@ namespace Medvedeva_41_22.Models
         // Связь "один-ко-многим" с преподавателями
         public ICollection<Teacher> Teachers { get; set; } = new List<Teacher>();
     }
-
-
 }

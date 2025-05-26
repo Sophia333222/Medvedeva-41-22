@@ -1,7 +1,7 @@
-﻿using Medvedeva_41_22.Models;
+﻿
+using Medvedeva_41_22.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 
 public class AcademicDegreeConfiguration : IEntityTypeConfiguration<AcademicDegree>
 {

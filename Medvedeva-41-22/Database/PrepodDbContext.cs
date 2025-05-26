@@ -1,11 +1,11 @@
 ﻿
-
+using Medvedeva_41_22.Database.Configurations;
 using Medvedeva_41_22.Models;
 using Microsoft.EntityFrameworkCore;
-
+using System.Collections.Generic;
+using System.Reflection.Emit;
 namespace Medvedeva_41_22.Database
 {
-
     public class PrepodDbContext : DbContext
     {
         public DbSet<Teacher> Teachers { get; set; } = null!;
@@ -14,7 +14,6 @@ namespace Medvedeva_41_22.Database
         public DbSet<Position> Positions { get; set; } = null!;
         public DbSet<Discipline> Disciplines { get; set; } = null!;
         public DbSet<Workload> Workloads { get; set; } = null!;
-
 
         public PrepodDbContext(DbContextOptions<PrepodDbContext> options)
             : base(options)
@@ -32,5 +31,6 @@ namespace Medvedeva_41_22.Database
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(PrepodDbContext).Assembly);
         }
+
     }
 }

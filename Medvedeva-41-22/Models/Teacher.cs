@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿
 namespace Medvedeva_41_22.Models
 {
     public class Teacher

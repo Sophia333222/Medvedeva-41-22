@@ -1,20 +1,24 @@
-﻿using Medvedeva_41_22.Models;
+﻿
+using Medvedeva_41_22.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class PositionConfiguration : IEntityTypeConfiguration<Position>
+namespace Medvedeva_41_22.Database.Configurations
 {
-    public void Configure(EntityTypeBuilder<Position> builder)
+    public class PositionConfiguration : IEntityTypeConfiguration<Position>
     {
-        builder.ToTable("Positions");
-        builder.HasKey(p => p.Id);
+        public void Configure(EntityTypeBuilder<Position> builder)
+        {
+            builder.ToTable("Positions");
+            builder.HasKey(p => p.Id);
 
-        builder.Property(p => p.Name).IsRequired().HasMaxLength(100);
+            builder.Property(p => p.Name).IsRequired().HasMaxLength(100);
 
-        // Связь "один-ко-многим" с преподавателями
-        builder.HasMany(p => p.Teachers)
-               .WithOne(t => t.Position)
-               .HasForeignKey(t => t.PositionId)
-               .OnDelete(DeleteBehavior.Restrict);
+            // Связь "один-ко-многим" с преподавателями
+            builder.HasMany(p => p.Teachers)
+                   .WithOne(t => t.Position)
+                   .HasForeignKey(t => t.PositionId)
+                   .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }
